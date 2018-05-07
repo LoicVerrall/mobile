@@ -68,17 +68,21 @@ const mapDispatchToProps = dispatch => {
 const search = connect(mapStateToProps, mapDispatchToProps)(Search)
 
 const headerTitleForNavigation = (navigation) => {
-  if (navigation.state.routeName === 'Search') {
-    return 'Search'
-  } else {
-    return ''
+  switch (navigation.state.routeName) {
+    case 'Search':
+      return 'Search'
+    case 'CourseList':
+      return 'Courses'
+    default:
+      break
   }
 }
 
 const SearchNavigator = StackNavigator(
   {
     Search: { screen: search },
-    UniProfile: { screen: UniProfile }
+    UniProfile: { screen: UniProfile },
+    CourseList: { screen: UniCourseList }
   },
   {
     headerMode: 'float',

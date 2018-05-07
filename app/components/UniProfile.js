@@ -43,6 +43,14 @@ class UniProfile extends Component {
     favouriteUni(data.university)
   }
 
+  showCoursesButtonPressed () {
+    this.props.navigation.navigate(
+      'CourseList', {
+        university: this.props.data.university
+      }
+    )
+  }
+
   tableDataFrom (university) {
     const tableRows = []
 
@@ -181,7 +189,8 @@ class UniProfile extends Component {
               </View>} />
 
           <Button
-            text='Show Courses' />
+            text='Show Courses'
+            onPress={() => this.showCoursesButtonPressed()} />
         </View>
       )
     }
