@@ -44,8 +44,7 @@
     "standard": "^11.0.1"
   },
   "jest": {
-    "preset": "react-native",
-    "testEnvironment": "node"
+    "preset": "react-native"
   },
   "standard": {
     "globals": [
