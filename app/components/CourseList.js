@@ -1,10 +1,28 @@
-import React from 'react'
-import { View, StyleSheet } from 'react-native'
-import { SearchBar } from 'react-native-elements'
+import React, { Component } from 'react'
 
-import UniCourseList from './UniCourseList.js'
+import gql from 'graphql-tag'
+import { graphql } from 'react-apollo'
 
-export default class CourseList extends React.Component {
+import UniCourseList from './list/UniCourseList.js'
+
+const COURSE_LIST_QUERY = gql`
+    query ($pubukprn: String!) {
+      courseList(pubukprn: $pubukprn) {
+        title
+        kiscourseid
+        isFullTime
+        courseURL
+        years
+        placementYearAvailable
+        yearAbroadAvailable
+        degreeLabel
+        isHons
+        rating
+      }
+    }
+  `
+
+class CourseList extends Component {
   constructor (props) {
     super(props)
 
@@ -24,3 +42,13 @@ export default class CourseList extends React.Component {
     return <UniCourseList data={university} keyExtractor={(item) => item.title} onPressItem={this.onPressItem} />
   }
 }
+
+const CourseListWithData = graphql(COURSE_LIST_QUERY, {
+  options: (props) => ({
+    variables: {
+      pubukprn: props.navigation.state.params.university.pubukprn
+    }
+  })
+})(CourseList)
+
+export default CourseListWithData

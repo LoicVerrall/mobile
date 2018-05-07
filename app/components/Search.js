@@ -4,10 +4,11 @@ import { StackNavigator } from 'react-navigation'
 
 import { connect } from 'react-redux'
 
-import UniProfile from './UniProfile'
 import Loading from './Loading'
 import NetworkError from './NetworkError'
+import UniProfile from './UniProfile'
 import UniCourseList from './list/UniCourseList'
+import CourseList from './CourseList'
 
 class Search extends Component {
   constructor (props) {
@@ -82,7 +83,7 @@ const SearchNavigator = StackNavigator(
   {
     Search: { screen: search },
     UniProfile: { screen: UniProfile },
-    CourseList: { screen: UniCourseList }
+    CourseList: { screen: CourseList }
   },
   {
     headerMode: 'float',
