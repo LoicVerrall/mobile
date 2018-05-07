@@ -7,13 +7,12 @@ import { connect } from 'react-redux'
 import UniProfile from './UniProfile'
 import Loading from './Loading'
 import NetworkError from './NetworkError'
-import UniList from './UniList'
+import UniCourseList from './list/UniCourseList'
 
 class Search extends Component {
   constructor (props) {
     super(props)
 
-    this.state = { searchBoxText: '' }
     this.onPressItem = this.onPressItem.bind(this)
   }
 
@@ -31,7 +30,7 @@ class Search extends Component {
     } else if (uniList.fetchFailed) {
       return <NetworkError />
     } else {
-      return <UniList data={uniList.lookupTable} onPressItem={this.onPressItem} />
+      return <UniCourseList data={uniList.lookupTable} keyExtractor={(item) => item.name} onPressItem={this.onPressItem} />
     }
   }
 

@@ -8,14 +8,14 @@ export default class ListItem extends Component {
   }
 
   _onPress () {
-    this.props.onPressItem(this.props.uni)
+    this.props.onPressItem(this.props.item)
   }
 
   render () {
     return (
       <TouchableOpacity onPress={this._onPress}>
         <View style={styles.item}>
-          <Text style={styles.itemText}>{this.props.uni.name}</Text>
+          <Text style={styles.itemText}>{this.props.text}</Text>
         </View>
       </TouchableOpacity>
     )

@@ -1,10 +1,10 @@
-import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import React, { Component } from 'react'
+import { View, StyleSheet, FlatList } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 
-import MyFlatList from './myflatlist/MyFlatList'
+import ListItem from './ListItem'
 
-export default class UniList extends React.Component {
+export default class UniCourseList extends Component {
   constructor (props) {
     super(props)
 
@@ -13,10 +13,36 @@ export default class UniList extends React.Component {
     }
   }
 
+  // Called when the text in the search field is changed, and updates the state.
   searchTermChanged (text) {
     this.setState({
       filterTerm: text
     })
+  }
+
+  // Filters the list of data to only include those that match the search term.
+  filterListBy (searchTerm) {
+    const { data } = this.props
+
+    if (searchTerm === undefined || searchTerm === '') {
+      return data
+    }
+
+    if (data.length > 0) {
+      let filteredList = data.filter((item) => {
+        const itemText = this.props.keyExtractor(item)
+        return itemText.toLowerCase().match(searchTerm.toLowerCase())
+      })
+
+      return filteredList
+    }
+
+    return data
+  }
+
+  renderItem (item) {
+    const itemText = this.props.keyExtractor(item)
+    return <ListItem text={itemText} item={item} onPressItem={this.props.onPressItem} />
   }
 
   render () {
@@ -32,11 +58,11 @@ export default class UniList extends React.Component {
           clearIcon={{ color: 'white', name: 'clear' }}
           placeholder='type to search' />
 
-        <MyFlatList
+        <FlatList
           style={styles.uniList}
-          data={this.props.data}
-          filterTerm={this.state.filterTerm}
-          onPressItem={this.props.onPressItem} />
+          data={this.filterListBy(this.state.filterTerm)}
+          renderItem={({item}) => this.renderItem(item)}
+          keyExtractor={(item, index) => this.props.keyExtractor(item)} />
       </View>
     )
   }

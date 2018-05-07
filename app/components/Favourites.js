@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import { connect } from 'react-redux'
 
-import MyFlatList from './myflatlist/MyFlatList'
+import UniCourseList from './list/UniCourseList'
 import UniProfile from './UniProfile'
 
 class Favourites extends Component {
@@ -27,12 +27,7 @@ class Favourites extends Component {
     if (favouriteUnis.length <= 0) {
       return <Text style={styles.noUnisText}>Universities You Favourite Will Appear Here</Text>
     } else {
-      return (
-        <MyFlatList
-          style={styles.favouriteUniList}
-          data={favouriteUnis}
-          onPressItem={this.onPressItem} />
-      )
+      return <UniCourseList data={favouriteUnis} keyExtractor={(item) => item.name} onPressItem={this.onPressItem} />
     }
   }
 
