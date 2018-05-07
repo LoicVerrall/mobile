@@ -6,10 +6,29 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { favouriteUni } from '../actions/actions'
 import { connect } from 'react-redux'
 
+import gql from 'graphql-tag'
 import { graphql } from 'react-apollo'
 import * as Api from '../lib/Api'
 
 import Loading from './Loading'
+
+const UNI_QUERY = gql`
+    query ($pubukprn: String!) {
+      university(pubukprn: $pubukprn) {
+        name
+        pubukprn
+        url
+        unionURL
+        color
+        lat
+        lon
+        averageRent
+        uniLocationType
+        uniType
+        nearestTrainStation
+      }
+    }
+  `
 
 class UniProfile extends Component {
   constructor (props) {
@@ -228,7 +247,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const UniProfileWithData = graphql(Api.uniInfoGQL(), {
+const UniProfileWithData = graphql(UNI_QUERY, {
   options: (props) => ({
     variables: {
       pubukprn: props.navigation.state.params.university.pubukprn
