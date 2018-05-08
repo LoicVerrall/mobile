@@ -19,6 +19,9 @@ function configureStore (initialState) {
 
 export const store = configureStore({})
 
+// Hide the debugger warning
+console.ignoredYellowBox = ['Remote debugger']
+
 const App = () => (
   <Provider store={store}>
     <AppContainer />

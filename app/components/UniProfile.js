@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Image, StyleSheet, TouchableOpacity, Text, FlatList } from 'react-native'
+import { View, Image, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native'
 import { Button } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
@@ -11,24 +11,39 @@ import { graphql } from 'react-apollo'
 import * as Api from '../lib/Api'
 
 import Loading from './Loading'
+import ProfileInfoList from './list/ProfileInfoList'
 
 const UNI_QUERY = gql`
-    query ($pubukprn: String!) {
-      university(pubukprn: $pubukprn) {
-        name
-        pubukprn
-        url
-        unionURL
-        color
+query ($pubukprn: String!) {
+  university(pubukprn: $pubukprn) {
+    name
+    sortableName
+    pubukprn
+    campuses {
+      name,
+      location {
         lat
         lon
-        averageRent
-        uniLocationType
-        uniType
-        nearestTrainStation
       }
+      locationType
+      nearestTrainStation {
+        name
+        code
+        location {
+          lat
+          lon
+        }
+        distance
+      }
+      averageRent
     }
-  `
+    uniType
+    unionUrl
+    url
+    color
+  }
+}
+`
 
 class UniProfile extends Component {
   constructor (props) {
@@ -51,7 +66,7 @@ class UniProfile extends Component {
     )
   }
 
-  tableDataFrom (university) {
+  uniTableDataFrom (university) {
     const tableRows = []
 
     // PUBUKPRN for debugging.
@@ -60,14 +75,6 @@ class UniProfile extends Component {
       tableRows.push({
         key: 'PUBUKPRN',
         value: university.pubukprn
-      })
-    }
-
-    // Nearest train station
-    if (university.nearestTrainStation !== null) {
-      tableRows.push({
-        key: 'Nearest Station',
-        value: university.nearestTrainStation
       })
     }
 
@@ -80,31 +87,10 @@ class UniProfile extends Component {
     }
 
     // SU URL
-    if (university.unionURL !== null) {
+    if (university.unionUrl !== null) {
       tableRows.push({
         key: 'Union URL',
-        value: university.unionURL
-      })
-    }
-
-    // Location type
-    if (university.uniLocationType !== null) {
-      let uniLocationType = ''
-
-      switch (university.uniLocationType) {
-        case 'CITY':
-          uniLocationType = 'City'
-          break
-        case 'SEASIDE_CITY':
-          uniLocationType = 'Seaside City'
-          break
-        default:
-          uniLocationType = 'Town'
-      }
-
-      tableRows.push({
-        key: 'Location Type',
-        value: uniLocationType
+        value: university.unionUrl
       })
     }
 
@@ -124,11 +110,68 @@ class UniProfile extends Component {
       })
     }
 
+    return tableRows
+  }
+
+  campusTableDataFrom (campus) {
+    const tableRows = []
+
+    // Campus Name
+    if (campus.name !== null) {
+      tableRows.push({
+        key: 'Campus Name',
+        value: campus.name
+      })
+    }
+
+    // Location type
+    if (campus.locationType !== null) {
+      let locationType = ''
+
+      switch (campus.locationType) {
+        case 'CITY':
+          locationType = 'City'
+          break
+        case 'SEASIDE_CITY':
+          locationType = 'Seaside City'
+          break
+        default:
+          locationType = 'Town'
+      }
+
+      tableRows.push({
+        key: 'Location Type',
+        value: locationType
+      })
+    }
+
+    // Nearest train station name
+    if (campus.nearestTrainStation !== null) {
+      tableRows.push({
+        key: 'Nearest Station',
+        value: campus.nearestTrainStation.name
+      })
+
+      // Station code
+      if (campus.nearestTrainStation.code !== null) {
+        tableRows.push({
+          key: 'Station Code',
+          value: campus.nearestTrainStation.code
+        })
+      }
+
+      // Distance
+      tableRows.push({
+        key: 'Distance From Campus',
+        value: campus.nearestTrainStation.distance + ' miles'
+      })
+    }
+
     // Average rent
-    if (university.averageRent !== null) {
+    if (campus.averageRent !== null) {
       tableRows.push({
         key: 'Average Rent (excl. bills)',
-        value: '£' + university.averageRent
+        value: '£' + campus.averageRent
       })
     }
 
@@ -169,6 +212,15 @@ class UniProfile extends Component {
         }
       })
 
+      const campusTables = university.campuses.map(campus => {
+        return (
+          <View key={campus.location.lat + campus.location.lon}>
+            <Text style={styles.campusSeparatorText}>Campus Information</Text>
+            <ProfileInfoList data={this.campusTableDataFrom(campus)} />
+          </View>
+        )
+      })
+
       return (
         <View style={[styles.container, containerStyle.uniBackground]}>
           <TouchableOpacity style={styles.favouriteButton} onPress={() => this.toggleFavourite(university)}>
@@ -179,18 +231,17 @@ class UniProfile extends Component {
 
           <Text style={styles.uniName}>{university.name}</Text>
 
-          <FlatList
-            style={styles.infoTable}
-            data={this.tableDataFrom(university)}
-            renderItem={({item}) =>
-              <View style={styles.infoRow}>
-                <Text style={styles.heading}>{item.key}</Text>
-                <Text style={styles.value}>{item.value}</Text>
-              </View>} />
+          <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+            <ProfileInfoList
+              data={this.uniTableDataFrom(university)} />
 
-          <Button
-            text='Show Courses'
-            onPress={() => this.showCoursesButtonPressed()} />
+            {campusTables}
+
+            <Button
+              style={styles.showCourses}
+              text='Show Courses'
+              onPress={() => this.showCoursesButtonPressed()} />
+          </ScrollView>
         </View>
       )
     }
@@ -209,15 +260,24 @@ class UniProfile extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1a64db',
-    display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#1a64db'
+  },
+  scrollView: {
     width: '100%',
     height: '100%'
   },
+  contentContainerStyle: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   favouriteButton: {
-    marginTop: 12
+    marginTop: 12,
+    marginBottom: 12
   },
   logoImage: {
     marginTop: 16,
@@ -226,33 +286,22 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   uniName: {
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(255,255,255,1)',
     marginTop: 20,
     marginBottom: 20,
     fontWeight: '900',
     fontSize: 20
   },
-  infoTable: {
-    width: '100%'
-  },
-  infoRow: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    minHeight: 40,
-    alignItems: 'center'
-  },
-  heading: {
-    flex: 1,
-    color: 'lightgray',
-    marginLeft: 16
-  },
-  value: {
-    flex: 1,
-    textAlign: 'right',
+  campusSeparatorText: {
     color: 'white',
-    marginRight: 16
+    margin: 12,
+    fontWeight: '700',
+    fontSize: 15,
+    textAlign: 'center'
+  },
+  showCourses: {
+    marginTop: 20,
+    marginBottom: 12
   }
 })
 
