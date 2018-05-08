@@ -6,7 +6,6 @@ import { graphql } from 'react-apollo'
 
 import Loading from './Loading'
 import UniCourseList from './list/UniCourseList.js'
-import CourseProfile from './CourseProfile'
 
 const COURSE_LIST_QUERY = gql`
     query ($pubukprn: String!) {

@@ -57,6 +57,14 @@ class CourseProfile extends Component {
       })
     }
 
+    // Full-time/Part-time
+    if (course.isFullTime !== null) {
+      tableRows.push({
+        key: 'Full-Time/Part-Time',
+        value: course.isFullTime === 'FullTime' ? 'Full-Time' : 'Part-Time'
+      })
+    }
+
     // Placement Year Available
     if (course.placementYearAvailable !== null) {
       tableRows.push({
