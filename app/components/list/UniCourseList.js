@@ -30,7 +30,7 @@ export default class UniCourseList extends Component {
 
     if (data.length > 0) {
       let filteredList = data.filter((item) => {
-        const itemText = this.props.keyExtractor(item)
+        const itemText = this.props.titleExtractor(item)
         return itemText.toLowerCase().match(searchTerm.toLowerCase())
       })
 
@@ -41,7 +41,7 @@ export default class UniCourseList extends Component {
   }
 
   renderItem (item) {
-    const itemText = this.props.keyExtractor(item)
+    const itemText = this.props.titleExtractor(item)
     return <ListItem text={itemText} item={item} onPressItem={this.props.onPressItem} />
   }
 

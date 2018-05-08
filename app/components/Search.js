@@ -31,7 +31,12 @@ class Search extends Component {
     } else if (uniList.fetchFailed) {
       return <NetworkError />
     } else {
-      return <UniCourseList data={uniList.lookupTable} keyExtractor={(item) => item.name} onPressItem={this.onPressItem} />
+      return <UniCourseList
+        data={uniList.lookupTable}
+        keyExtractor={(item) => item.name}
+        titleExtractor={(item) => item.name}
+        onPressItem={this.onPressItem}
+      />
     }
   }
 

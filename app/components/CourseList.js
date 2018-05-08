@@ -9,17 +9,16 @@ import UniCourseList from './list/UniCourseList.js'
 
 const COURSE_LIST_QUERY = gql`
     query ($pubukprn: String!) {
-      courseList(pubukprn: $pubukprn) {
+      courses(pubukprn: $pubukprn) {
         title
         kiscourseid
         isFullTime
         courseURL
         years
-        placementYearAvaliable
-        yearAbroadAvaliable
+        placementYearAvailable
+        yearAbroadAvailable
         degreeLabel
         isHons
-        rating
       }
     }
   `
@@ -45,7 +44,12 @@ class CourseList extends Component {
     } else {
       return (
         <View style={styles.container}>
-          <UniCourseList data={data.courseList} keyExtractor={(item) => item.title} onPressItem={this.onPressItem} />
+          <UniCourseList
+            data={data.courses}
+            keyExtractor={(item) => item.kiscourseid}
+            titleExtractor={(item) => item.title}
+            onPressItem={this.onPressItem}
+          />
         </View>
       )
     }
