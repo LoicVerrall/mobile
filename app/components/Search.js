@@ -9,6 +9,7 @@ import NetworkError from './NetworkError'
 import UniProfile from './UniProfile'
 import UniCourseList from './list/UniCourseList'
 import CourseList from './CourseList'
+import CourseProfile from './CourseProfile'
 
 class Search extends Component {
   constructor (props) {
@@ -88,7 +89,8 @@ const SearchNavigator = StackNavigator(
   {
     Search: { screen: search },
     UniProfile: { screen: UniProfile },
-    CourseList: { screen: CourseList }
+    CourseList: { screen: CourseList },
+    CourseProfile: { screen: CourseProfile }
   },
   {
     headerMode: 'float',

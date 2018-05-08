@@ -6,6 +6,7 @@ import { graphql } from 'react-apollo'
 
 import Loading from './Loading'
 import UniCourseList from './list/UniCourseList.js'
+import CourseProfile from './CourseProfile'
 
 const COURSE_LIST_QUERY = gql`
     query ($pubukprn: String!) {
@@ -13,12 +14,6 @@ const COURSE_LIST_QUERY = gql`
         title
         kiscourseid
         isFullTime
-        courseURL
-        years
-        placementYearAvailable
-        yearAbroadAvailable
-        degreeLabel
-        isHons
       }
     }
   `
@@ -33,6 +28,7 @@ class CourseList extends Component {
   onPressItem (item) {
     this.props.navigation.navigate(
       'CourseProfile', {
+        pubukprn: this.props.navigation.state.params.university.pubukprn,
         course: item
       }
     )
