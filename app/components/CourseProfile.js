@@ -80,7 +80,6 @@ class CourseProfile extends Component {
     if (data.loading) {
       return <Loading />
     } else if (data.error) {
-      console.log()
       return <NetworkError />
     } else {
       const course = data.course

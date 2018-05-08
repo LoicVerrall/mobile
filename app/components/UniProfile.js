@@ -11,6 +11,7 @@ import { graphql } from 'react-apollo'
 import * as Api from '../lib/Api'
 
 import Loading from './Loading'
+import NetworkError from './NetworkError'
 import ProfileInfoList from './list/ProfileInfoList'
 
 const UNI_QUERY = gql`
@@ -189,6 +190,8 @@ class UniProfile extends Component {
   renderUniInfo (data) {
     if (data.loading) {
       return <Loading />
+    } else if (data.error) {
+      return <NetworkError />
     } else {
       const university = data.university
       const { favouriteUnis } = this.props
