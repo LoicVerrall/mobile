@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native'
-import { Button } from 'react-native-elements'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import { View, StyleSheet, Text, ScrollView } from 'react-native'
 
 import { connect } from 'react-redux'
 
@@ -13,7 +11,7 @@ import NetworkError from './NetworkError'
 import ProfileInfoList from './list/ProfileInfoList'
 
 const COURSE_QUERY = gql`
-query ($pubukprn: String!, $kiscourseid: String!, $isFullTime: String!) {
+query ($pubukprn: String!, $kiscourseid: String!, $isFullTime: FullTime!) {
   course(pubukprn: $pubukprn, kiscourseid: $kiscourseid, isFullTime: $isFullTime) {
     title
     kiscourseid
@@ -57,11 +55,19 @@ class CourseProfile extends Component {
       })
     }
 
+    // Full-time/Part-time
+    if (course.isFullTime !== null) {
+      tableRows.push({
+        key: 'Full-Time/Part-Time',
+        value: course.isFullTime === 'FullTime' ? 'Full-Time' : 'Part-Time'
+      })
+    }
+
     // Placement Year Available
     if (course.placementYearAvailable !== null) {
       tableRows.push({
         key: 'Placement Year Available',
-        value: course.placementYearAvailable === 'true' ? '👍' : '👎'
+        value: course.placementYearAvailable ? '👍' : '👎'
       })
     }
 
@@ -69,7 +75,7 @@ class CourseProfile extends Component {
     if (course.yearAbroadAvailable !== null) {
       tableRows.push({
         key: 'Year Abroad Available',
-        value: course.yearAbroadAvailable === 'true' ? '👍' : '👎'
+        value: course.yearAbroadAvailable ? '👍' : '👎'
       })
     }
 
