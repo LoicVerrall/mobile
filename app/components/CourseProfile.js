@@ -133,8 +133,11 @@ const styles = StyleSheet.create({
   },
   courseName: {
     color: 'rgba(255,255,255,1)',
+    textAlign: 'center',
     marginTop: 20,
     marginBottom: 20,
+    marginLeft: 12,
+    marginRight: 12,
     fontWeight: '900',
     fontSize: 20
   }
