@@ -52,8 +52,19 @@ function backgroundColorReducer (state = 'red', action) {
   }
 }
 
+// Toggle reduced colours
+
+function toggleReducedColoursReducer (state = false, action) {
+  if (action.type === types.TOGGLE_REDUCED_COLOURS) {
+    return !state
+  } else {
+    return state
+  }
+}
+
 export default combineReducers({
   favouriteUnis: favouriteUnisReducer,
   uniLookupTable: uniLookupTableReducer,
-  backgroundColor: backgroundColorReducer
+  backgroundColor: backgroundColorReducer,
+  reducedColoursEnabled: toggleReducedColoursReducer
 })

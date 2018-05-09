@@ -56,3 +56,11 @@ export function fetchUniLookupTable () {
     )
   }
 }
+
+// Reduced Colour Setting
+
+export function toggleReducedColours () {
+  return {
+    type: types.TOGGLE_REDUCED_COLOURS
+  }
+}

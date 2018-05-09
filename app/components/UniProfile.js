@@ -194,12 +194,12 @@ class UniProfile extends Component {
       return <NetworkError />
     } else {
       const university = data.university
-      const { favouriteUnis } = this.props
+      const { favouriteUnis, reducedColoursEnabled } = this.props
 
       // The default uni (background) color.
       let universityColor = styles.container.backgroundColor
 
-      if (university.color !== null) {
+      if (reducedColoursEnabled === false && university.color !== null) {
         universityColor = university.color
       }
 
@@ -318,7 +318,8 @@ const UniProfileWithData = graphql(UNI_QUERY, {
 
 const mapStateToProps = state => {
   return {
-    favouriteUnis: state.favouriteUnis
+    favouriteUnis: state.favouriteUnis,
+    reducedColoursEnabled: state.reducedColoursEnabled
   }
 }
 
